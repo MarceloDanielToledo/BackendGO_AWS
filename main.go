@@ -3,6 +3,7 @@ package main
 import (
 	"backendgo_aws/awsgo"
 	"backendgo_aws/bd"
+	"backendgo_aws/handlers"
 	"backendgo_aws/models"
 	"backendgo_aws/secretmanager"
 	"context"
@@ -14,9 +15,7 @@ import (
 )
 
 func main() {
-	// Code
 	lambda.Start(EjecuteLambda)
-
 }
 
 func EjecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
@@ -67,6 +66,20 @@ func EjecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 			},
 		}
 		return res, nil
+	}
+
+	apiResponse := handlers.Handlers(awsgo.Ctx, request)
+	if apiResponse.CustomResp == nil {
+		res = &events.APIGatewayProxyResponse{
+			StatusCode: apiResponse.StatusCode,
+			Body:       apiResponse.Message,
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}
+		return res, nil
+	} else {
+		return apiResponse.CustomResp, nil
 	}
 
 }
