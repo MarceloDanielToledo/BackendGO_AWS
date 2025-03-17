@@ -43,7 +43,7 @@ func Register(ctx context.Context) models.ResponseAPI {
 		return r
 	}
 
-	_, status, err := bd.AddRegister(t)
+	_, status, err := bd.InsertRegister(t)
 
 	if err != nil {
 		r.Message = "A error ocurred in register method"
