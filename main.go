@@ -7,6 +7,7 @@ import (
 	"backendgo_aws/models"
 	"backendgo_aws/secretmanager"
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -43,7 +44,9 @@ func EjecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 		}
 		return res, nil
 	}
-
+	fmt.Println("user", SecretModel.Usernname)
+	fmt.Println("password", SecretModel.Password)
+	fmt.Println("host", SecretModel.Host)
 	path := strings.Replace(request.PathParameters["twittergo"], os.Getenv("UrlPrefix"), "", -1)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("path"), path)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("method"), request.HTTPMethod)
@@ -54,7 +57,7 @@ func EjecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("jwtSign"), SecretModel.JWTSign)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("body"), request.Body)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("bucketName"), os.Getenv("BucketName"))
-
+	fmt.Println("TestDB")
 	// Test DB connection
 	err = bd.ConnectDB(awsgo.Ctx)
 	if err != nil {
@@ -67,7 +70,18 @@ func EjecuteLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 		}
 		return res, nil
 	}
+	fmt.Println("Gateway")
+	fmt.Println("path", awsgo.Ctx.Value(models.Key("path")))
+	fmt.Println("method", awsgo.Ctx.Value(models.Key("method")))
+	fmt.Println("user", awsgo.Ctx.Value(models.Key("user")))
+	fmt.Println("password", awsgo.Ctx.Value(models.Key("password")))
+	fmt.Println("host", awsgo.Ctx.Value(models.Key("host")))
+	fmt.Println("database", awsgo.Ctx.Value(models.Key("database")))
+	fmt.Println("jwtSign", awsgo.Ctx.Value(models.Key("jwtSign")))
+	fmt.Println("body", awsgo.Ctx.Value(models.Key("body")))
+	fmt.Println("bucketName", awsgo.Ctx.Value(models.Key("bucketName")))
 
+	fmt.Println("Gateway")
 	apiResponse := handlers.Handlers(awsgo.Ctx, request)
 	if apiResponse.CustomResp == nil {
 		res = &events.APIGatewayProxyResponse{
@@ -94,8 +108,5 @@ func ValidateParameters() bool {
 		return false
 	}
 	_, getParameter = os.LookupEnv("UrlPrefix")
-	if !getParameter {
-		return false
-	}
-	return true
+	return getParameter
 }
