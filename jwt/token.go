@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"backendgo_aws/bd"
 	"backendgo_aws/models"
 	"errors"
 	"strings"
@@ -24,6 +25,14 @@ func ProcessToken(tk string, JWTSign string) (*models.Claim, bool, string, error
 	})
 	if err == nil {
 		//Check in the database
+		_, exist, _ := bd.CheckAlreadyExist(claims.Email)
+		if exist {
+			Email = claims.Email
+			UserId = claims.ID.Hex()
+		}
+
+		return &claims, exist, UserId, nil
+
 	}
 	if !tkn.Valid {
 		return &claims, false, string(""), errors.New("invalid token")
