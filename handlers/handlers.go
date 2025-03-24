@@ -36,6 +36,8 @@ func Handlers(ctx context.Context, request events.APIGatewayProxyRequest) models
 			return routers.Register(ctx)
 		case "login":
 			return routers.Login(ctx)
+		case "tweet":
+			return routers.AddTweet(ctx, claim)
 		}
 	case "PUT":
 		switch ctx.Value(models.Key("path")).(string) {
