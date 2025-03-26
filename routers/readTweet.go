@@ -13,7 +13,7 @@ func ReadTweet(request events.APIGatewayProxyRequest) models.ResponseAPI {
 	var response models.ResponseAPI
 	response.StatusCode = 400
 
-	ID := request.PathParameters["id"]
+	ID := request.QueryStringParameters["id"]
 	page := request.QueryStringParameters["page"]
 	if len(ID) < 1 {
 		response.Message = "You must send the ID parameter"
@@ -30,7 +30,7 @@ func ReadTweet(request events.APIGatewayProxyRequest) models.ResponseAPI {
 	}
 
 	tweet, success := bd.GetTweets(ID, int64(pag))
-	if success == false {
+	if !success {
 		response.Message = "Error reading the tweet"
 		return response
 	}
