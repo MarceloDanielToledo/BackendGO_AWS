@@ -75,11 +75,7 @@ func UploadImage(ctx context.Context, fileType string, request events.APIGateway
 				sess, err := session.NewSession(&aws.Config{
 					Region: aws.String("us-east-1"),
 				})
-				if err != nil {
-					response.Message = "Error creating the session"
-					response.StatusCode = 500
-					return response
-				}
+				// Session creation error handling is already done above, removing redundant check
 
 				if err != nil {
 					response.Message = "Error creating the session"
