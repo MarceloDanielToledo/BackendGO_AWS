@@ -35,9 +35,9 @@ func GetImage(ctx context.Context, fileType string, request events.APIGatewayPro
 	var filename string
 	switch fileType {
 	case "A":
-		filename = "avatars/" + profile.Avatar
+		filename = profile.Avatar
 	case "B":
-		filename = "banners/" + profile.Banner
+		filename = profile.Banner
 	}
 
 	fmt.Println("Filename: " + filename)
