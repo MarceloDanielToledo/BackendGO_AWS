@@ -32,7 +32,7 @@ func UploadImage(ctx context.Context, fileType string, request events.APIGateway
 	idUser := claim.ID.Hex()
 	var fileName string
 	var user models.User
-	bucket := aws.String(ctx.Value(models.Key("bucket")).(string))
+	bucket := aws.String(ctx.Value(models.Key("bucketName")).(string))
 
 	switch fileType {
 	case "A":
@@ -75,7 +75,6 @@ func UploadImage(ctx context.Context, fileType string, request events.APIGateway
 				sess, err := session.NewSession(&aws.Config{
 					Region: aws.String("us-east-1"),
 				})
-				// Session creation error handling is already done above, removing redundant check
 
 				if err != nil {
 					response.Message = "Error creating the session"
@@ -108,7 +107,8 @@ func UploadImage(ctx context.Context, fileType string, request events.APIGateway
 
 	} else {
 		response.Message = "Content-Type is not multipart"
-		response.StatusCode = 500
+		response.StatusCode = 400
+		return response
 	}
 	response.StatusCode = 200
 	response.Message = "File uploaded successfully"
