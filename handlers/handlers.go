@@ -44,6 +44,8 @@ func Handlers(ctx context.Context, request events.APIGatewayProxyRequest) models
 			return routers.Login(ctx)
 		case "tweet":
 			return routers.AddTweet(ctx, claim)
+		case "addRelation":
+			return routers.AddRelation(ctx, request, claim)
 		case "addAvatar":
 			return routers.UploadImage(ctx, "A", request, claim)
 		case "addBanner":
@@ -58,6 +60,8 @@ func Handlers(ctx context.Context, request events.APIGatewayProxyRequest) models
 		switch ctx.Value(models.Key("path")).(string) {
 		case "deleteTweet":
 			return routers.DeleteTweet(request, claim)
+		case "deleteRelation":
+			return routers.DeleteRelation(request, claim)
 		}
 	default:
 
