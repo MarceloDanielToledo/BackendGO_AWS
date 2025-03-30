@@ -31,7 +31,7 @@ func GetUserList(request events.APIGatewayProxyRequest, claim models.Claim) mode
 
 	users, status := bd.GetAllUsers(idUser, int64(pagTemp), search, typeUser)
 	if !status {
-		response.Message = "Error getting users: " + err.Error()
+		response.Message = "Error getting users"
 		return response
 	}
 
